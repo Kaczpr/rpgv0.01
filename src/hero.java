@@ -107,9 +107,7 @@ public class hero {
                 "\nCharisma: " + this.Char);
     }
     void increase(int howMany, int choice){
-        int choice;
-        System.out.println("What skill would you like to increase? 1 - S; 2 - Dex; 3 - Con; 4 - Int; 5 - Wis; 6 - Char");
-        choice = scan.nextInt();
+
         switch (choice){
             case 1: this.S += howMany ; break;
             case 2: this.Dex += howMany ; break;
@@ -120,37 +118,28 @@ public class hero {
         }
     }
 
-    boolean decrease(int howMany, int points){
-        int choice;
-        System.out.println("What skill would you like to decrese? 1 - S; 2 - Dex; 3 - Con; 4 - Int; 5 - Wis; 6 - Char");
-        choice = scan.nextInt();
+    void decrease(int howMany, int choice){
+
         switch (choice){
-            case 1: if(this.S > 8) this.S -- ; else {
+            case 1: if(this.S > 8) this.S -= howMany ; else {
                 System.out.println("Skill cannot be lesser then 8!");
-                return false;
             } break;
-            case 2: if(this.Dex > 8) this.Dex -- ; else {
+            case 2: if(this.Dex > 8) this.Dex -= howMany ; else {
                 System.out.println("Skill cannot be lesser then 8!");
-                return false;
             } break;
-            case 3: if(this.Con > 8) this.Con -- ; else {
+            case 3: if(this.Con > 8) this.Con -= howMany ; else {
                 System.out.println("Skill cannot be lesser then 8!");
-                return false;
             } break;
-            case 4: if(this.Int > 8) this.Int -- ; else {
+            case 4: if(this.Int > 8) this.Int -= howMany ; else {
                 System.out.println("Skill cannot be lesser then 8!");
-                return false;
             } break;
-            case 5: if(this.Wis > 8) this.Wis -- ; else {
+            case 5: if(this.Wis > 8) this.Wis -= howMany ; else {
                 System.out.println("Skill cannot be lesser then 8!");
-                return false;
             } break;
-            case 6: if(this.Char > 8) this.Char -- ; else {
+            case 6: if(this.Char > 8) this.Char -= howMany ; else {
                 System.out.println("Skill cannot be lesser then 8!");
-                return false;
             } break;
         }
-        return true;
     }
 
     void create(){
@@ -168,23 +157,33 @@ public class hero {
         while(points > 0){
             System.out.print("Would you like to increase, or decrease your skill? (1 - Increase, 2 - Decrease)");
             inOrDec = scan.nextInt();
+            int choice;
+            System.out.println("What skill would you like to increase/decrease? 1 - S; 2 - Dex; 3 - Con; 4 - Int; 5 - Wis; 6 - Char");
+            choice = scan.nextInt();
             System.out.println("And by how many points? "); int howMany = scan.nextInt();
 
 
-            switch (inOrDec){
+            switch (inOrDec) {
                 case 1: {
-                    if(howMany > points){
+                    if (howMany > points) {
                         System.out.println("You don't have that many points left friend");
+                    } else {
+                        this.increase(howMany, choice);
+                        points -= howMany;
+
                     }
-                    else{
-                    this.increase(howMany, points);
-                    points -= howMany;
-                    break;}
-                }
-                case 2:
-                    if(howMany > whatFullSkill())
-                    if(this.decrease(howMany, points)) points += howMany;
                     break;
+                }
+                case 2: {
+                    if (howMany > (whatFullSkill(choice) - 8)) {
+                        System.out.println("Skill cannon be lesser then 8");
+                    }
+                    else {
+                        this.decrease(howMany, choice);
+                        points += howMany;
+                    }
+                    break;
+                }
             }
             this.show();
             System.out.println("Points left: " + points);
