@@ -5,10 +5,11 @@ public class hero {
     Scanner scan = new Scanner(System.in);
     Random Rand = new Random();
 
-    double hp, mp;
+    double hp, san;
     String name;
     double S, Dex, Con, Int, Wis, Char;
     double mS, mDex, mCon, mInt, mWis, mChar;
+    int exp, gold;
 
     void setModifiers(){
         this.mS =   (this.S-10)/2; this.mS = Math.ceil(this.mS);
@@ -22,7 +23,7 @@ public class hero {
     hero(String name, Integer hp, Integer mp, Integer S, Integer Dex, Integer Con, Integer Int, Integer Wis, Integer Char){
         this.name = name;
         this.hp = hp;
-        this.mp = mp;
+        this.san = mp;
         this.S = S;
         this.Dex = Dex;
         this.Con = Con;
@@ -34,7 +35,7 @@ public class hero {
     hero(){
         this.name = "noName";
         this.hp = 10;
-        this.mp = 10;
+        this.san = 10;
         this.S = 10;
         this.Dex = 10;
         this.Con = 10;
@@ -42,27 +43,60 @@ public class hero {
         this.Wis = 10;
         this.Char = 10;
         this.setModifiers();
+        this.exp = 0;
     };
     void hello (){
 
         System.out.println("Hello I'm " + this.name + "!");
     }
-    double attack(){
+    double whatSkill(int skill){
+        double ret;
+        switch(skill){
+
+            case 1: ret =    this.mS; break;
+            case 2: ret =    this.mDex; break;
+            case 3: ret =    this.mCon; break;
+            case 4: ret =    this.mInt; break;
+            case 5: ret =    this.mWis; break;
+            case 6: ret =    this.mChar; break;
+            default: ret =  0; break;
+        }
+        return ret;
+    }
+    double whatFullSkill(int skill){
+        double ret;
+        switch(skill){
+
+            case 1: ret =    this.S; break;
+            case 2: ret =    this.Dex; break;
+            case 3: ret =    this.Con; break;
+            case 4: ret =    this.Int; break;
+            case 5: ret =    this.Wis; break;
+            case 6: ret =    this.Char; break;
+            default: ret =  0; break;
+        }
+        return ret;
+    }
+    double check(int skill){
         double toHit = 0;
         int dice = Rand.nextInt(20) + 1;
         toHit = this.mS + dice;
-        System.out.println(this.name + " attacks! " + toHit + "( S: " + this.mS + " + Dice: " + dice + ") to hit!");
+        System.out.println("Lets roll the dice..."); game.pressEnterKeyToContinue();
+        System.out.println("Your results are: " + toHit + " (" + dice + " + " + whatSkill(skill) + ")");
         return toHit;
     }
     void showExtra(){
         System.out.println("Mighty " + this.name + "'s statistics: ");
-        System.out.println("Health points, your vitality: " + this.hp);
+        System.out.println("Health points, measuring your vitality: " + this.hp);
+        System.out.println("Sanity points, measuring your Will to adventure forth" + this.san);
         System.out.println("Strength, measuring physical power: " + this.S + " (+" + this.mS + ")" +
                 "\nDexterity, measuring agility: " + this.Dex + " (+" + this.mDex + ")" +
                 "\nConstitution, measuring endurance: " + this.Con + " (+" + this.mCon + ")" +
                 "\nIntelligence, measuring reasoning and memory: " + this.Int + " (+" + this.mChar + ")" +
                 "\nWisdom, measuring Perception and Insight: " + this.Wis + " (+" + this.mWis + ")" +
                 "\nCharisma, measuring force of Personality: " + this.Char  + " (+" + this.mChar + ")");
+        System.out.println("Experience points, measuring experience you've gained along the way: " + this.exp);
+        System.out.println("Gold coins, measuring your wealth: " + this.gold);
     }
     void show(){
         System.out.println("Strength: " + this.S +
@@ -72,20 +106,21 @@ public class hero {
                 "\nWisdom: " + this.Wis +
                 "\nCharisma: " + this.Char);
     }
-    void increase(){
+    void increase(int howMany, int choice){
         int choice;
         System.out.println("What skill would you like to increase? 1 - S; 2 - Dex; 3 - Con; 4 - Int; 5 - Wis; 6 - Char");
         choice = scan.nextInt();
         switch (choice){
-            case 1: this.S ++ ; break;
-            case 2: this.Dex ++ ; break;
-            case 3: this.Con ++ ; break;
-            case 4: this.Int ++ ; break;
-            case 5: this.Wis ++ ; break;
-            case 6: this.Char ++ ; break;
+            case 1: this.S += howMany ; break;
+            case 2: this.Dex += howMany ; break;
+            case 3: this.Con += howMany ; break;
+            case 4: this.Int += howMany ; break;
+            case 5: this.Wis += howMany ; break;
+            case 6: this.Char += howMany ; break;
         }
     }
-    boolean decrease(){
+
+    boolean decrease(int howMany, int points){
         int choice;
         System.out.println("What skill would you like to decrese? 1 - S; 2 - Dex; 3 - Con; 4 - Int; 5 - Wis; 6 - Char");
         choice = scan.nextInt();
@@ -117,6 +152,7 @@ public class hero {
         }
         return true;
     }
+
     void create(){
         int points = 10; int inOrDec;
         System.out.println("Hi! Tell us, whats your name adventurer? ");
@@ -132,10 +168,22 @@ public class hero {
         while(points > 0){
             System.out.print("Would you like to increase, or decrease your skill? (1 - Increase, 2 - Decrease)");
             inOrDec = scan.nextInt();
+            System.out.println("And by how many points? "); int howMany = scan.nextInt();
+
+
             switch (inOrDec){
-                case 1: this.increase(); points --; break;
+                case 1: {
+                    if(howMany > points){
+                        System.out.println("You don't have that many points left friend");
+                    }
+                    else{
+                    this.increase(howMany, points);
+                    points -= howMany;
+                    break;}
+                }
                 case 2:
-                    if(this.decrease()) points++;
+                    if(howMany > whatFullSkill())
+                    if(this.decrease(howMany, points)) points += howMany;
                     break;
             }
             this.show();
