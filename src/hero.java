@@ -7,6 +7,7 @@ public class hero {
 
     double hp, san;
     String name;
+    double currHp = hp, currSan = this.san;
     double S, Dex, Con, Int, Wis, Char;
     double mS, mDex, mCon, mInt, mWis, mChar;
     int exp, gold;
@@ -44,7 +45,7 @@ public class hero {
         this.Char = 10;
         this.setModifiers();
         this.exp = 0;
-    };
+    }
     void hello (){
 
         System.out.println("Hello I'm " + this.name + "!");
@@ -78,7 +79,7 @@ public class hero {
         return ret;
     }
     double check(int skill){
-        double toHit = 0;
+        double toHit;
         int dice = Rand.nextInt(20) + 1;
         toHit = this.mS + dice;
         System.out.println("Lets roll the dice..."); game.pressEnterKeyToContinue();
@@ -87,8 +88,8 @@ public class hero {
     }
     void showExtra(){
         System.out.println("Mighty " + this.name + "'s statistics: ");
-        System.out.println("Health points, measuring your vitality: " + this.hp);
-        System.out.println("Sanity points, measuring your Will to adventure forth" + this.san);
+        System.out.println("Health points, measuring your vitality: " + this.currHp + "/" + this.hp);
+        System.out.println("Sanity points, measuring your Will to adventure forth: " + this.currSan + "/" + this.san);
         System.out.println("Strength, measuring physical power: " + this.S + " (+" + this.mS + ")" +
                 "\nDexterity, measuring agility: " + this.Dex + " (+" + this.mDex + ")" +
                 "\nConstitution, measuring endurance: " + this.Con + " (+" + this.mCon + ")" +
@@ -190,9 +191,18 @@ public class hero {
             game.pressEnterKeyToContinue(); game.clearScreen();
         }
         System.out.println("You're out of points now, so lets look at how your character looks."); this.setModifiers();
+        this.currHp = hp; this.currSan = this.san;
         game.pressEnterKeyToContinue(); game.clearScreen();
         this.showExtra();
         game.pressEnterKeyToContinue(); game.clearScreen();
-        System.out.println("Your, my friend, are quite ready to set forth into this fantasy lands! Take care!"); game.pressEnterKeyToContinue(); game.clearScreen();
+        System.out.println("You, my friend, are quite ready to set forth into this fantasy lands! Take care!"); game.pressEnterKeyToContinue(); game.clearScreen();
     }
+    void rest(){
+        if(this.gold > 2) {
+            System.out.println("You have rested in an Inn for 2 gold coins. You feel better now");
+            this.gold -=2;
+            this.currHp = this.hp;
+            this.currSan = this.san;
+        }
+        }
 }
